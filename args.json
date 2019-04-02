@@ -1,0 +1,23 @@
+{
+    "output_dir":"",
+    "min_confidence":0.90,
+    "max_cosine_distance":0.2,
+    "video_path":"demo5.mp4",
+    "embedding_dim": 128,
+    "head_name": "direct",
+    "model_name": "resnet_v1_50",
+    "metric":"euclidean",
+    "torch_model":"weights/sst300_0712_83000.pth",    
+    "rank":1,
+    "batch_size": 32,
+    "dist_batch_size":32,
+    "loading_threads": 16,
+    "triplet_threshold": 18,
+    "experiment_root":"/media/zujo/Production1/Interns/kishan/DeepCC/experiments/street2shop_resnet_v1_50-mAP-67.09",
+    "query_images_path":"query_images2",
+    "nn_budget":null,
+    "display":false,
+    "take_frames_per_sec":4,
+    "detection_model_dir": "/media/zujo/Production1/Datasets/Manual-Annotation-Zujo-Fashion-Street2Shop/object_detection_dress/inference_graph/frozen_inference_graph.pb",
+    "detection_labels_path":"/media/zujo/Production1/Datasets/Manual-Annotation-Zujo-Fashion-Street2Shop/object_detection_dress/street2shop_label.pbtxt"
+  }
