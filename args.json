@@ -7,7 +7,7 @@
     "head_name": "direct",
     "model_name": "resnet_v1_50",
     "metric":"euclidean",
-    "torch_model":"weights/sst300_0712_83000.pth",    
+    "torch_model":"/media/zujo/Production1/Pretrained_Models/sst_torch/sst300_0712_83000.pth",    
     "rank":1,
     "batch_size": 32,
     "dist_batch_size":32,

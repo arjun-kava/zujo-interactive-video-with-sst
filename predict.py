@@ -42,8 +42,8 @@ def prediction(query_embeddings,gallery_embeddings_val,dist_session,args,rank=1,
             print('\rPredicted batch {}-{}/{}'.format(
             start_idx, start_idx + b_shape, len(query_embeddings)),
                 flush=True, end='')
-            t_index=np.reshape(t_index,(rank,b_shape))
-            t_dist=np.reshape(t_dist,(rank,b_shape))
+            t_index=np.reshape(t_index,(gallery_embeddings_val.shape[0],b_shape))
+            t_dist=np.reshape(t_dist,(gallery_embeddings_val.shape[0],b_shape))
             t_index=t_index.T
             t_dist=t_dist.T
             dist_list+=list(t_dist)

@@ -43,15 +43,53 @@ def main(detection_session,dist_session,emb_session,tracker_model,args):
         gallery_images_path=[os.path.join(track_dir,track_id,path) for path in os.listdir(os.path.join(track_dir,track_id))]
         gallery_embs=utils.get_embeddings(gallery_images_path,emb_session,args)
         recommended_dist,recommended_index=prediction(list(query_embs),np.array(gallery_embs),dist_session,args,rank=1)
-        index=np.argmin(np.array(recommended_dist))
-        min_dist=recommended_dist[index]
-        index2=recommended_index[index]
-        print(index2)
-        print(gallery_images_path[index2[0]])
-        cv2.imwrite(os.path.join(args.root_dir,"final_output","query_image"+str(track_id)+"_"+str(min_dist)+".jpg"),cv2.imread(query_image_paths[index]))
-        cv2.imwrite(os.path.join(args.root_dir,"final_output","gallery_image"+str(track_id)+".jpg"),cv2.imread(gallery_images_path[index2[0]]))
+        array=np.array(recommended_dist)
+        indexes=np.where(array>0)
+        flag=True
+        temp_index=[]
+        max_mean_squerd_error=0
+        index=-1
+        temp_sum=0
+        results=[]
+        threshold=19
+        if indexes[0].shape[0]==0:
+            continue
+        for i,j in zip(indexes[0],indexes[1]):
+            if flag:
+                old_i=i
+                temp_index.append([i,j])
+                temp_sum+=(threshold-recommended_dist[i][j])
+                results.append(f"{i}||{j}||{temp_sum}||{(threshold-recommended_dist[i][j])}\n")
+                flag=False
+                continue
+            if old_i==i:
+                temp_index.append([i,j])
+                temp_sum+=(threshold-recommended_dist[i][j])
+                results.append(f"{i}||{j}||{temp_sum}||{(threshold-recommended_dist[i][j])}\n")
+            else:
+
+                mean_squerd_error=temp_sum/len(temp_index)
+                if max_mean_squerd_error < mean_squerd_error:
+                    max_mean_squerd_error=mean_squerd_error
+                    index=old_i
+                old_i=i
+                temp_index=[[i,j]]
+                temp_sum=(threshold-recommended_dist[i][j])
+                results.append(f"{i}||{j}||{temp_sum}||{(threshold-recommended_dist[i][j])}||{max_mean_squerd_error}||{mean_squerd_error}\n")
+        
+        mean_squerd_error=temp_sum/len(temp_index)
+        if max_mean_squerd_error < mean_squerd_error:
+            max_mean_squerd_error=mean_squerd_error
+            index=old_i
+        results.append(f"{i}||{j}||{temp_sum}||{(threshold-recommended_dist[i][j])}||{max_mean_squerd_error}||{mean_squerd_error}\n")
+        o_file=open(os.path.join(args.root_dir,"final_output",str(track_id)+".txt"),"w")
+        o_file.writelines(results)
+        if index==-1:
+            continue
+        cv2.imwrite(os.path.join(args.root_dir,"final_output","query_image"+str(track_id)+".jpg"),cv2.imread(query_image_paths[index]))
+        cv2.imwrite(os.path.join(args.root_dir,"final_output","gallery_image"+str(track_id)+".jpg"),cv2.imread(gallery_images_path[0]))
         image_id,_=os.path.splitext(query_images[index])
-        match_dict[track_id]={"image_id": image_id, "distance":min_dist[0] }
+        match_dict[track_id]=image_id
 
     return {
         "match_dict":match_dict,

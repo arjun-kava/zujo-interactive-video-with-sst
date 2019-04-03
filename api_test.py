@@ -57,10 +57,10 @@ class DetectionApi(Resource):
                 y1 = track['top']
                 y2 = track['top']+track['height']
 
-                image_id = data['match_dict'][str(track['track_id'])]["image_id"]
-                distance = data['match_dict'][str(track['track_id'])]["distance"]
+                
                
-                if float(distance) < args.triplet_threshold:
+                if str(track['track_id']) in list(data['match_dict'].keys()):
+                    image_id = data['match_dict'][str(track['track_id'])]
                     coordinates.append({
                         'coordinate_id': cid,
                         'x1': x1,
@@ -70,7 +70,6 @@ class DetectionApi(Resource):
                         'center_x': (x1+x2)/2,
                         'center_y': (y1+y2)/2,
                         'image_id': image_id,
-                        'distance': str(distance),
                         'track_id': track['track_id']
                     })
                     cid += 1

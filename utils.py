@@ -151,7 +151,7 @@ def find_index_list(emb,rank):
     index=[]
     dist=[]
     temp_dist = emb.copy()
-    for k in range(rank):
+    for k in range(temp_dist[0].shape[0]):
         temp_index=np.argmin(temp_dist,1)
         index.append(temp_index)
         dist.append(np.min(temp_dist,1))
